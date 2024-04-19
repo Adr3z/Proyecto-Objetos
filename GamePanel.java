@@ -1,17 +1,16 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * First Escenario
+ * First Scene
  * Adreez
  * 18/04/24
  */
 public class GameWorld extends World {
 
     // Características del escenario
-
     public GameWorld() {
-        super(800, 600, 1); // Usamos las dimensiones del escenario para el tamaño
-        prepare(); // Método para preparar el escenario
+        super(800, 600, 1); // Dimensiones
+        prepare(); 
     }
 
     private void prepare() {
