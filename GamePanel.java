@@ -1,4 +1,4 @@
-import greenfoot.*; 
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -14,7 +14,7 @@ public class GameWorld extends World {
     
     // Características del escenario
     public GameWorld() {
-        super(750, 550, 1); // Dimensiones
+        super(800, 600, 1); // Dimensiones
         loadmap("map.txt");
         prepare();
     }
@@ -28,7 +28,7 @@ public class GameWorld extends World {
                 String[] tiles = line.split(" ");
                 for (int col = 0; col < tiles.length; col++) {
                     int tileType = Integer.parseInt(tiles[col]);
-                    addObject(new Tile(tileType), col * 50, row * 50);
+                    addObject(new Tile(tileType), (col * 50) + 25, (row * 50) + 25); 
                 }
                 row++;
             }
