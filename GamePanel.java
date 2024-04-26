@@ -6,11 +6,12 @@ import java.io.IOException;
 /**
  * First Scene
  * Adreez
- * 18/04/24
+ * 25/04/24
  */
 
 public class GameWorld extends World {
     private int currentMapIndex = 1;
+    private ObjectSetter objectPlacer = new ObjectSetter(this);
     
     // Características del escenario
     public GameWorld() {
@@ -28,7 +29,8 @@ public class GameWorld extends World {
                 String[] tiles = line.split(" ");
                 for (int col = 0; col < tiles.length; col++) {
                     int tileType = Integer.parseInt(tiles[col]);
-                    addObject(new Tile(tileType), (col * 50) + 25, (row * 50) + 25); 
+                    addObject(new Tile(tileType), (col * 50) + 25, (row * 50) + 25);
+                    objectPlacer.placeObjects(col, row);
                 }
                 row++;
             }
@@ -42,5 +44,5 @@ public class GameWorld extends World {
         Protagonic prota = new Protagonic();
         addObject(prota, 100,100);
         prota.setLocation(393,204);
-    }
+   }
 }
