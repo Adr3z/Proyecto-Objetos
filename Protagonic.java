@@ -1,9 +1,11 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import java.util.ArrayList;
 
 /**
  * PROTAGONIC
  * ADREEZ
  */
+
 public class Protagonic extends Actor {
     
     private int speed = 2; 
@@ -14,6 +16,7 @@ public class Protagonic extends Actor {
     private int animationDelay = 10; // Delay entre cambios de sprite
     private int delayCount = 0;
     private ObjectSetter objectSetter;
+    private ArrayList<SuperObject> inventory;
 
     public Protagonic(ObjectSetter objectSetter) {
         this.objectSetter = objectSetter;
@@ -30,6 +33,7 @@ public class Protagonic extends Actor {
         direction = 1; 
 
         setImage(sprites[direction][0]);
+        inventory = new ArrayList<SuperObject>();
     }
     
     private GreenfootImage scaleImage(GreenfootImage image, int width, int height) {
@@ -46,6 +50,25 @@ public class Protagonic extends Actor {
             moveAndAnimate(2);
         } else if (Greenfoot.isKeyDown("right")) {
             moveAndAnimate(3); 
+        }
+        if (Greenfoot.isKeyDown("e")) {
+            if( Greenfoot.isKeyDown("shift") ){
+                closeInventoryWindow();
+            } else {
+                showInventoryWindow();
+            }
+        }
+    }
+    
+    private void showInventoryWindow() {
+        InventoryWindow inventoryWindow = new InventoryWindow(this);
+        getWorld().addObject(inventoryWindow, getWorld().getWidth() / 2, getWorld().getHeight() / 2);
+    }
+    
+    private void closeInventoryWindow() {
+        World world = getWorld();
+        if (world != null) {
+            world.removeObjects(world.getObjects(InventoryWindow.class));
         }
     }
     
@@ -140,11 +163,16 @@ public class Protagonic extends Actor {
 
         // Si hay colisión con el objeto, eliminarlo del mundo
         if (object != null) {
+            inventory.add((SuperObject)object);
             getWorld().removeObject(object);
         }
     }
-
+    
     private Actor getOneIntersectingObject(int xOffset, int yOffset, Class<?> cls) {
         return getOneObjectAtOffset(xOffset, yOffset, cls);
+    }
+    
+    public ArrayList<SuperObject> getInventory() {
+        return inventory;
     }
 }
