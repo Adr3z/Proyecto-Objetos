@@ -4,7 +4,6 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * PROTAGONIC
  * ADREEZ
  */
-
 public class Protagonic extends Actor {
     
     private int speed = 2; 
@@ -77,10 +76,14 @@ public class Protagonic extends Actor {
             dx = speed; 
         }
 
-        // Verificar si hay una colisión en la nueva posición del jugador
+        checkCollisions();
         if (!isCollidingWithTile(dx, dy)) {
-            setLocation(getX() + dx, getY() + dy); 
+        setLocation(getX() + dx, getY() + dy); 
         }
+    }
+    
+    private boolean isSolidTile(int tileType) {
+    return tileType == 1 || tileType == 2 || tileType == 4;
     }
     
     private boolean isCollidingWithTile(int dx, int dy) {
@@ -88,20 +91,48 @@ public class Protagonic extends Actor {
         int futureX = getX() + dx * speed;
         int futureY = getY() + dy * speed;
 
-        // Ajustar las coordenadas futuras para detenerse antes de la colisión
-        if (dx != 0) {
-            futureX += (dx > 0) ? -speed / 2 : speed / 2;
-        }
-        if (dy != 0) {
-            futureY += (dy > 0) ? -speed / 2 : speed / 2;
-        }
-    
-        Actor tile = getOneObjectAtOffset(dx, dy, Tile.class);
-        if (tile != null) {
-            int tileType = ((Tile) tile).getTileType();
-            return ((Tile) tile).isSolid(tileType);
-        }
+        // Calcular las posiciones de las baldosas adyacentes al jugador
+        int tileX = futureX + dx;
+        int tileY = futureY + dy;
 
-        return false;
+        // Verificar si hay colisión con una baldosa sólida en la posición futura
+        Actor tile = getOneObjectAtOffset(dx, dy, Tile.class);
+        return tile != null && isSolidTile(((Tile) tile).getTileType());
+    }
+    
+    private void checkCollisions() {
+       // Obtener la posición del jugador
+        int playerX = getX();
+        int playerY = getY();
+
+        // Verificar colisión con las baldosas alrededor del jugador
+        if (isCollidingWithTile(0, -spriteHeight / 2 - 1)) {
+            Tile tileAbove = (Tile) getOneIntersectingObject(0, -spriteHeight / 2 - 1, Tile.class);
+            setLocation(playerX, tileAbove.getY() + tileAbove.getImage().getHeight() / 2 + spriteHeight / 2 + 1);
+        }
+        if (isCollidingWithTile(0, spriteHeight / 2 + 1)) {
+        Tile tileBelow = (Tile) getOneIntersectingObject(0, spriteHeight / 2 + 1, Tile.class);
+        setLocation(playerX, tileBelow.getY() - tileBelow.getImage().getHeight() / 2 - spriteHeight / 2 - 1);
+        }
+        if (isCollidingWithTile(-spriteWidth / 2 - 1, 0)) {
+            Tile tileLeft = (Tile) getOneIntersectingObject(-spriteWidth / 2 - 1, 0, Tile.class);
+            setLocation(tileLeft.getX() + tileLeft.getImage().getWidth() / 2 + spriteWidth / 2 + 1, playerY);
+        }
+        if (isCollidingWithTile(spriteWidth / 2 + 1, 0)) {
+            Tile tileRight = (Tile) getOneIntersectingObject(spriteWidth / 2 + 1, 0, Tile.class);
+            setLocation(tileRight.getX() - tileRight.getImage().getWidth() / 2 - spriteWidth / 2 - 1, playerY);
+        }
+        
+        // Verificar si hay colisión con el objeto Obj_Key
+        Obj_Key object = (Obj_Key) getOneIntersectingObject(Obj_Key.class);
+
+        // Si hay colisión con el objeto Obj_Key, eliminarlo del mundo
+        if (object != null) {
+            getWorld().removeObject(object);
+        }
+    }
+    
+    private Actor getOneIntersectingObject(int xOffset, int yOffset, Class<?> cls) {
+        return getOneObjectAtOffset(xOffset, yOffset, cls);
     }
 }
