@@ -13,9 +13,11 @@ public class Protagonic extends Actor {
     private int direction; // Dirección actual del jugador (0: arriba, 1: abajo, 2: izquierda, 3: derecha)
     private int animationDelay = 10; // Delay entre cambios de sprite
     private int delayCount = 0;
+    private ObjectSetter objectSetter;
 
-    public Protagonic() {
-       sprites = new GreenfootImage[4][2]; // Matriz de imágenes para 4 direcciones, 2 sprites por dirección
+    public Protagonic(ObjectSetter objectSetter) {
+        this.objectSetter = objectSetter;
+        sprites = new GreenfootImage[4][2]; // Matriz de imágenes para 4 direcciones, 2 sprites por dirección
         sprites[0][0] = scaleImage(new GreenfootImage("/player/up_sprite1.png"), spriteWidth, spriteHeight);
         sprites[0][1] = scaleImage(new GreenfootImage("/player/up_sprite2.png"), spriteWidth, spriteHeight);
         sprites[1][0] = scaleImage(new GreenfootImage("/player/down_sprite1.png"), spriteWidth, spriteHeight);
@@ -123,15 +125,25 @@ public class Protagonic extends Actor {
             setLocation(tileRight.getX() - tileRight.getImage().getWidth() / 2 - spriteWidth / 2 - 1, playerY);
         }
         
-        // Verificar si hay colisión con el objeto Obj_Key
-        Obj_Key object = (Obj_Key) getOneIntersectingObject(Obj_Key.class);
+        for (SuperObject obj : objectSetter.obj) {
+            // Verificar colisión con el objeto
+            if (isTouching(obj.getClass())) {
+                // Realizar la interacción específica para ese objeto
+                collectObjects(obj.getClass());
+            }
+        }
+    }
+    
+    private void collectObjects(Class<?> cls) {
+        // Verificar si hay colisión con el objeto específico
+        Actor object = getOneIntersectingObject(cls);
 
-        // Si hay colisión con el objeto Obj_Key, eliminarlo del mundo
+        // Si hay colisión con el objeto, eliminarlo del mundo
         if (object != null) {
             getWorld().removeObject(object);
         }
     }
-    
+
     private Actor getOneIntersectingObject(int xOffset, int yOffset, Class<?> cls) {
         return getOneObjectAtOffset(xOffset, yOffset, cls);
     }

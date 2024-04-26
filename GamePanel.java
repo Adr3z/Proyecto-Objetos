@@ -41,7 +41,7 @@ public class GameWorld extends World {
     }
 
     private void prepare() {
-        Protagonic prota = new Protagonic();
+        Protagonic prota = new Protagonic(this.objectPlacer);
         addObject(prota, 100,100);
         prota.setLocation(393,204);
    }
