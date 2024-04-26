@@ -6,10 +6,11 @@ import greenfoot.*;
  * 25/04/24
  */
 
-public class Obj_Key extends SuperObject {
+ public class Obj_Key extends SuperObject {
     public Obj_Key(){
         name = "Key";
-
-        image = new GreenfootImage("/Objects/key.png");
+        GreenfootImage image = new GreenfootImage("/Objects/key.png");
+        image.scale(50,50);
+        setImage(image);
     }
 }
