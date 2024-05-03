@@ -2,11 +2,12 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * First Scene
  * Adreez
- * 25/04/24
+ * 02/05/24
  */
 
 public class GameWorld extends World {
@@ -39,10 +40,12 @@ public class GameWorld extends World {
             System.err.println("Error al leer el archivo: " + e.getMessage());
         }
     }
-
+   
     private void prepare() {
         Protagonic prota = new Protagonic(this.objectPlacer);
+        Monster skeleton = new Monster();
         addObject(prota, 100,100);
         prota.setLocation(393,204);
+        addObject(skeleton,200,400);
    }
 }

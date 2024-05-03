@@ -1,14 +1,14 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
-
 /**
  * PROTAGONIC
  * ADREEZ
  */
-
 public class Protagonic extends Actor {
     
     private int speed = 2; 
+    private int max_life = 100;
+    private int life;
     private int spriteWidth = 50; 
     private int spriteHeight = 50; 
     private GreenfootImage[][] sprites; // Matriz de imágenes para los sprites del jugador
@@ -34,6 +34,7 @@ public class Protagonic extends Actor {
 
         setImage(sprites[direction][0]);
         inventory = new ArrayList<SuperObject>();
+        life = max_life;
     }
     
     private GreenfootImage scaleImage(GreenfootImage image, int width, int height) {
@@ -174,5 +175,16 @@ public class Protagonic extends Actor {
     
     public ArrayList<SuperObject> getInventory() {
         return inventory;
+    }
+    
+    public void reduceLife(int damage) {
+        life -= damage; 
+        if (life <= 0) {
+            gameOver();
+        }
+    }
+
+    private void gameOver() {
+        Greenfoot.stop(); // Detener el juego
     }
 }
