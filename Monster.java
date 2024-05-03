@@ -1,7 +1,7 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
-
+import java.util.ArrayList;
 /**
- * 
+ * Monsters
  * Adreez 
  * 02/05/2024
  */
@@ -10,63 +10,151 @@ public class Monster extends Actor
     private int speed = 1; 
     private int spriteWidth = 50; 
     private int spriteHeight = 50; 
-    private GreenfootImage[][] movementSprites; // Matriz de imágenes para los sprites del monstruo
+    private GreenfootImage[][] movementSprites;
+    private GreenfootImage[][] attackSprites;
     private int direction;
+    private int agroRange = 100; // Rango de detección del jugador
+    private int attackRange = 20; // Rango de ataque al jugador
+    private int attackDamage = 10; // Daño del ataque
+    private boolean attacking;
     private int max_life = 4;
     private int actual_life;
     private int animationDelay = 10; // Delay entre cambios de sprite
     private int delayCount = 0;
+    private int attackFrame = 0;
+    private int detectionDelay = 30; // Retraso en la detección del jugador
+    private int detectionCount = 0; 
     
     public Monster(){
-        sprites = new GreenfootImage[4][2]; // Matriz de imágenes para 4 direcciones, 2 sprites por dirección
-        sprites[0][0] = scaleImage(new GreenfootImage("/monsters/skeletonlord_up_1.png"), spriteWidth, spriteHeight);
-        sprites[0][1] = scaleImage(new GreenfootImage("/monsters/skeletonlord_up_2.png"), spriteWidth, spriteHeight);
-        sprites[1][0] = scaleImage(new GreenfootImage("/monsters/skeletonlord_down_1.png"), spriteWidth, spriteHeight);
-        sprites[1][1] = scaleImage(new GreenfootImage("/monsters/skeletonlord_down_2.png"), spriteWidth, spriteHeight);
-        sprites[2][0] = scaleImage(new GreenfootImage("/monsters/skeletonlord_left_1.png"), spriteWidth, spriteHeight);
-        sprites[2][1] = scaleImage(new GreenfootImage("/monsters/skeletonlord_left_2.png"), spriteWidth, spriteHeight);
-        sprites[3][0] = scaleImage(new GreenfootImage("/monsters/skeletonlord_right_1.png"), spriteWidth, spriteHeight);
-        sprites[3][1] = scaleImage(new GreenfootImage("/monsters/skeletonlord_right_2.png"), spriteWidth, spriteHeight);
+        //movementSprites
+        movementSprites = new GreenfootImage[4][2]; // Matriz de imágenes para 4 direcciones, 2 sprites por dirección
+        movementSprites[0][0] = scaleImage(new GreenfootImage("/monsters/skeletonlord_up_1.png"), spriteWidth, spriteHeight);
+        movementSprites[0][1] = scaleImage(new GreenfootImage("/monsters/skeletonlord_up_2.png"), spriteWidth, spriteHeight);
+        movementSprites[1][0] = scaleImage(new GreenfootImage("/monsters/skeletonlord_down_1.png"), spriteWidth, spriteHeight);
+        movementSprites[1][1] = scaleImage(new GreenfootImage("/monsters/skeletonlord_down_2.png"), spriteWidth, spriteHeight);
+        movementSprites[2][0] = scaleImage(new GreenfootImage("/monsters/skeletonlord_left_1.png"), spriteWidth, spriteHeight);
+        movementSprites[2][1] = scaleImage(new GreenfootImage("/monsters/skeletonlord_left_2.png"), spriteWidth, spriteHeight);
+        movementSprites[3][0] = scaleImage(new GreenfootImage("/monsters/skeletonlord_right_1.png"), spriteWidth, spriteHeight);
+        movementSprites[3][1] = scaleImage(new GreenfootImage("/monsters/skeletonlord_right_2.png"), spriteWidth, spriteHeight);
 
+        //Attacking sprites
+        attackSprites = new GreenfootImage[4][2];
+        attackSprites[0][0] = scaleImage(new GreenfootImage("/monsters/skeletonlord_attack_up_1.png"), spriteWidth, spriteHeight);
+        attackSprites[0][1] = scaleImage(new GreenfootImage("/monsters/skeletonlord_attack_up_2.png"), spriteWidth, spriteHeight);
+        attackSprites[1][0] = scaleImage(new GreenfootImage("/monsters/skeletonlord_attack_down_1.png"), spriteWidth, spriteHeight);
+        attackSprites[1][1] = scaleImage(new GreenfootImage("/monsters/skeletonlord_attack_down_2.png"), spriteWidth, spriteHeight);
+        attackSprites[2][0] = scaleImage(new GreenfootImage("/monsters/skeletonlord_attack_left_1.png"), spriteWidth, spriteHeight);
+        attackSprites[2][1] = scaleImage(new GreenfootImage("/monsters/skeletonlord_attack_left_2.png"), spriteWidth, spriteHeight);
+        attackSprites[3][0] = scaleImage(new GreenfootImage("/monsters/skeletonlord_attack_right_1.png"), spriteWidth, spriteHeight);
+        attackSprites[3][1] = scaleImage(new GreenfootImage("/monsters/skeletonlord_attack_right_2.png"), spriteWidth, spriteHeight);
+        
         direction = 1; 
 
-        setImage(sprites[direction][0]);
+        setImage(movementSprites[direction][0]);
         actual_life = max_life;
+        attacking = false;
     }
     
-        private GreenfootImage scaleImage(GreenfootImage image, int width, int height) {
+    private GreenfootImage scaleImage(GreenfootImage image, int width, int height) {
         image.scale(width, height);
         return image;
     }
     
     public void act()
     {
+        detectionCount++;
+        if (attacking) {
+            setImage(attackSprites[direction][attackFrame]);
+            attackFrame = (attackFrame + 1) % 2;
+        }
         moveAndAnimate(direction);
-        if (getX() % 50 == 0 && getY() % 50 == 0) {
-            if (getX() == 0 && getY() == 0 && direction == 2) {
-                direction = 1;
-            } else if (getX() == 0 && getY() == 100 && direction == 1) {
-                direction = 3;
-            } else if (getX() == 100 && getY() == 100 && direction == 3) {
-                direction = 0;
-            } else if (getX() == 100 && getY() == 0 && direction == 0) {    
-                direction = 2;
+        if (detectionCount >= detectionDelay) {
+            detectPlayer();
+            detectionCount = 0; 
+        }
+    }
+    
+     private void detectPlayer() {
+        Protagonic player = (Protagonic) getOneObjectInRange(agroRange, Protagonic.class);
+        if (player != null && !attacking) {
+            moveToPlayer(player);
+            if (getDistance(player) <= attackRange) {
+                attackPlayer(player);
             }
         }
+    }
+    
+     private double getDistance(Protagonic player) {
+        int dx = getX() - player.getX();
+        int dy = getY() - player.getY();
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+    
+    private void moveToPlayer(Protagonic player) {
+        int dx = player.getX() - getX();
+        int dy = player.getY() - getY();
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+            // Mover en el eje X
+            if (dx > 0) {
+                direction = 3; // Derecha
+            } else {
+                direction = 2; // Izquierda
+            }
+        } else {
+            // Mover en el eje Y
+            if (dy > 0) {
+                direction = 1; // Abajo
+            } else {
+                direction = 0; // Arriba
+            }
+        }
+
+        moveAndAnimate(direction);
+    }
+
+    private void attackPlayer(Protagonic player) {
+        attacking = true;
+        player.reduceLife(attackDamage);
+        // Cambiar sprite para animación de ataque
+        setImage(attackSprites[direction][attackFrame]);
+        attackFrame = (attackFrame + 1) % 2; // Alternar entre dos frames de ataque
+        attacking = false;
+    }
+    
+   public Actor getOneObjectInRange(int range, Class<?> cls) {
+        Actor object = getOneObjectAtOffset(0, 0, cls); // Verifica si hay un objeto en la ubicación actual
+        if (object != null) {
+            return object; // Retorna el objeto 
+        }
+    
+        // Verifica en las posiciones adyacentes
+        for (int dx = -range; dx <= range; dx++) {
+            for (int dy = -range; dy <= range; dy++) {
+                if (dx != 0 || dy != 0) { // Evita la posición actual
+                    object = getOneObjectAtOffset(dx, dy, cls);
+                    if (object != null) {
+                        return object; // Retorna el objeto si se encuentra en rango
+                    }
+                }
+            }
+        }
+    
+        return null; // Retorna null si no se encontró ningún objeto en rango
     }
 
     private void moveAndAnimate(int newDirection) {
         // Cambiar la imagen del monstruo para la animación
         if (newDirection != direction) {
             direction = newDirection;
-            setImage(sprites[direction][0]); // Mostrar el primer sprite de la nueva dirección
+            setImage(movementSprites[direction][0]); // Mostrar el primer sprite de la nueva dirección
             delayCount = 0; // Reiniciar el contador de delay
         } else {
             // Incrementar el contador de delay
             delayCount++;
             // Cambiar al siguiente sprite de la animación
             if (delayCount >= animationDelay) {
-                setImage(sprites[direction][(getImage().equals(sprites[direction][0])) ? 1 : 0]);
+                setImage(movementSprites[direction][(getImage().equals(movementSprites[direction][0])) ? 1 : 0]);
                 delayCount = 0; // Reiniciar el contador de delay
             }
         }
@@ -87,28 +175,42 @@ public class Monster extends Actor
         // Verificar colisiones y mover al monstruo
         if (!isCollidingWithTile(dx, dy)) {
             setLocation(getX() + dx, getY() + dy); 
+        } else {
+            // Cambiar de dirección
+            int alternativeDirection = (newDirection + Greenfoot.getRandomNumber(3) + 1) % 4; // Dirección aleatoria entre las restantes
+            moveAndAnimate(alternativeDirection);
         }
-    
-        // Cambiar de dirección cuando se llega al borde de una plataforma
-        if (isAtEdge() || (getX() % 50 == 0 && getY() % 50 == 0)) {
-            direction = (direction + 1) % 4;
-        }
-    }
-    private boolean isCollidingWithTile(int dx, int dy) {
-        // Obtener posiciones futuras
-        int futureX = getX() + dx * speed;
-        int futureY = getY() + dy * speed;
-
-        // Calcular las posiciones de las baldosas adyacentes al jugador
-        int tileX = futureX + dx;
-        int tileY = futureY + dy;
-
-        // Verificar si hay colisión con una baldosa sólida en la posición futura
-        Actor tile = getOneObjectAtOffset(dx, dy, Tile.class);
-        return tile != null && isSolidTile(((Tile) tile).getTileType());
     }
     
     private boolean isSolidTile(int tileType) {
         return tileType == 1 || tileType == 2 || tileType == 4;
+    }
+    
+    private boolean isCollidingWithTile(int dx, int dy) {
+        int futureX = getX() + dx * speed;
+        int futureY = getY() + dy * speed;
+    
+        int halfWidth = spriteWidth / 2;
+        int halfHeight = spriteHeight / 2;
+
+        // Calcular las coordenadas de los bordes del monstruo
+        int leftBorder = futureX - halfWidth;
+        int rightBorder = futureX + halfWidth;
+        int topBorder = futureY - halfHeight;
+        int bottomBorder = futureY + halfHeight;
+
+        // Verificar si alguno de los bordes del monstruo está dentro de una baldosa sólida
+        return isSolidTileAt(leftBorder, topBorder) || isSolidTileAt(rightBorder, topBorder) || isSolidTileAt(leftBorder, bottomBorder) || isSolidTileAt(rightBorder, bottomBorder) ||
+                isOutOfBounds(leftBorder, topBorder) || isOutOfBounds(rightBorder, topBorder) || isOutOfBounds(leftBorder, bottomBorder) || isOutOfBounds(rightBorder, bottomBorder);
+    }
+    
+    private boolean isSolidTileAt(int x, int y) {
+        Actor tile = getOneObjectAtOffset(x - getX(), y - getY(), Tile.class);
+        return tile != null && isSolidTile(((Tile) tile).getTileType());
+    }
+    
+    private boolean isOutOfBounds(int x, int y) {
+        World world = getWorld();
+        return x < 0 || y < 0 || x >= world.getWidth() || y >= world.getHeight();
     }
 }
