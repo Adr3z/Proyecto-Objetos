@@ -104,12 +104,14 @@ public class Protagonic extends Actor {
 
         checkCollisions();
         if (!isCollidingWithTile(dx, dy)) {
-        setLocation(getX() + dx, getY() + dy); 
+            setLocation(getX() + dx, getY() + dy); 
         }
     }
     
     private boolean isSolidTile(int tileType) {
-    return tileType == 1 || tileType == 2 || tileType == 4;
+        return tileType == 16 || tileType == 18 || tileType == 19 || tileType == 20 || tileType == 21 || tileType == 22 || tileType == 23 || tileType == 24
+            || tileType == 25 || tileType == 26 || tileType == 27 || tileType == 28 || tileType == 29 || tileType == 30 || tileType == 31
+            || tileType == 32 || tileType == 33 || tileType == 34 || tileType == 35; 
     }
     
     private boolean isCollidingWithTile(int dx, int dy) {
@@ -137,8 +139,8 @@ public class Protagonic extends Actor {
             setLocation(playerX, tileAbove.getY() + tileAbove.getImage().getHeight() / 2 + spriteHeight / 2 + 1);
         }
         if (isCollidingWithTile(0, spriteHeight / 2 + 1)) {
-        Tile tileBelow = (Tile) getOneIntersectingObject(0, spriteHeight / 2 + 1, Tile.class);
-        setLocation(playerX, tileBelow.getY() - tileBelow.getImage().getHeight() / 2 - spriteHeight / 2 - 1);
+            Tile tileBelow = (Tile) getOneIntersectingObject(0, spriteHeight / 2 + 1, Tile.class);
+            setLocation(playerX, tileBelow.getY() - tileBelow.getImage().getHeight() / 2 - spriteHeight / 2 - 1);
         }
         if (isCollidingWithTile(-spriteWidth / 2 - 1, 0)) {
             Tile tileLeft = (Tile) getOneIntersectingObject(-spriteWidth / 2 - 1, 0, Tile.class);
