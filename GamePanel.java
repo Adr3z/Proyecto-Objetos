@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * First Scene
  * Adreez
- * 02/05/24
+ * 08/05/24
  */
 
 public class GameWorld extends World {
@@ -17,7 +17,7 @@ public class GameWorld extends World {
     // Características del escenario
     public GameWorld() {
         super(800, 600, 1); // Dimensiones
-        loadmap("map.txt");
+        loadmap("map07.txt");
         prepare();
     }
 
@@ -44,8 +44,8 @@ public class GameWorld extends World {
     private void prepare() {
         Protagonic prota = new Protagonic(this.objectPlacer);
         Monster skeleton = new Monster();
-        addObject(prota, 100,100);
-        prota.setLocation(393,204);
-        addObject(skeleton,200,400);
+        addObject(prota, 175,375);
+        //prota.setLocation(393,204);
+        addObject(skeleton,400,425);
    }
 }

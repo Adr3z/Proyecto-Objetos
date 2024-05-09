@@ -4,22 +4,34 @@ import java.util.ArrayList;
  * PROTAGONIC
  * ADREEZ
  */
+
 public class Protagonic extends Actor {
-    
+    //stats
     private int speed = 2; 
     private int max_life = 100;
     private int life;
+    private int level;
+    private int money;
+    private int strength;
+    private int attack;
+    private int defense;
+    
+    //Animaciones y cosas
     private int spriteWidth = 50; 
     private int spriteHeight = 50; 
     private GreenfootImage[][] sprites; // Matriz de imágenes para los sprites del jugador
     private int direction; // Dirección actual del jugador (0: arriba, 1: abajo, 2: izquierda, 3: derecha)
     private int animationDelay = 10; // Delay entre cambios de sprite
     private int delayCount = 0;
+    
+    //si
     private ObjectSetter objectSetter;
     private ArrayList<SuperObject> inventory;
+    private StatsWindow statsWindow;
 
     public Protagonic(ObjectSetter objectSetter) {
         this.objectSetter = objectSetter;
+        
         sprites = new GreenfootImage[4][2]; // Matriz de imágenes para 4 direcciones, 2 sprites por dirección
         sprites[0][0] = scaleImage(new GreenfootImage("/player/up_sprite1.png"), spriteWidth, spriteHeight);
         sprites[0][1] = scaleImage(new GreenfootImage("/player/up_sprite2.png"), spriteWidth, spriteHeight);
@@ -35,6 +47,8 @@ public class Protagonic extends Actor {
         setImage(sprites[direction][0]);
         inventory = new ArrayList<SuperObject>();
         life = max_life;
+        
+        this.statsWindow = new StatsWindow(this);
     }
     
     private GreenfootImage scaleImage(GreenfootImage image, int width, int height) {
@@ -163,7 +177,6 @@ public class Protagonic extends Actor {
     private void collectObjects(Class<?> cls) {
         // Verificar si hay colisión con el objeto específico
         Actor object = getOneIntersectingObject(cls);
-
         // Si hay colisión con el objeto, eliminarlo del mundo
         if (object != null) {
             inventory.add((SuperObject)object);
@@ -180,13 +193,53 @@ public class Protagonic extends Actor {
     }
     
     public void reduceLife(int damage) {
-        life -= damage; 
-        if (life <= 0) {
+        this.life -= damage; 
+        if (this.life <= 0) {
             gameOver();
         }
+        statsWindow.drawStats(this);
+    }
+    
+    public void addedToWorld(World world) {
+        if (!world.getObjects(StatsWindow.class).isEmpty()) {
+            world.removeObject(world.getObjects(StatsWindow.class).get(0)); // Eliminar instancia anterior (si hay alguna)
+        }
+        world.addObject(statsWindow, 75, 90);
+    }
+    
+    public int getSpeed() {
+        return speed;
     }
 
-    private void gameOver() {
-        Greenfoot.stop(); // Detener el juego
+    public int getLife() {
+        return life;
+    }
+
+    public int getMaxLife() {
+        return max_life;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public int getStrength() {
+        return strength;
+    }
+
+    public int getAttack() {
+        return attack;
+    }
+
+    public int getDefense() {
+        return defense;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void gameOver() {
+        Greenfoot.setWorld(new GameOverScreen());
     }
 }
