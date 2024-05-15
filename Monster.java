@@ -1,29 +1,32 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
 /**
- * Monsters
+ * 
  * Adreez 
  * 02/05/2024
  */
 public class Monster extends Actor
 {
+    //stats
     private int speed = 1; 
+    private int agroRange = 100; // Rango de detección del jugador
+    private int attackRange = 20; // Rango de ataque al jugador
+    private int attackDamage = 10; // Daño del ataque
+    private int max_life = 4;
+    private int actual_life;
+
+    //sprites y delays
     private int spriteWidth = 50; 
     private int spriteHeight = 50; 
     private GreenfootImage[][] movementSprites;
     private GreenfootImage[][] attackSprites;
-    private int direction;
-    private int agroRange = 100; // Rango de detección del jugador
-    private int attackRange = 20; // Rango de ataque al jugador
-    private int attackDamage = 10; // Daño del ataque
-    private boolean attacking;
-    private int max_life = 4;
-    private int actual_life;
     private int animationDelay = 10; // Delay entre cambios de sprite
     private int delayCount = 0;
     private int attackFrame = 0;
     private int detectionDelay = 30; // Retraso en la detección del jugador
     private int detectionCount = 0; 
+    private int direction;
+    private boolean attacking;
     
     public Monster(){
         //movementSprites
@@ -66,8 +69,10 @@ public class Monster extends Actor
         if (attacking) {
             setImage(attackSprites[direction][attackFrame]);
             attackFrame = (attackFrame + 1) % 2;
+            Greenfoot.delay(10); 
+        }else{
+            moveAndAnimate(direction);
         }
-        moveAndAnimate(direction);
         if (detectionCount >= detectionDelay) {
             detectPlayer();
             detectionCount = 0; 
@@ -109,16 +114,13 @@ public class Monster extends Actor
                 direction = 0; // Arriba
             }
         }
-
-        moveAndAnimate(direction);
     }
 
     private void attackPlayer(Protagonic player) {
-        attacking = true;
+       attacking = true;
         player.reduceLife(attackDamage);
-        // Cambiar sprite para animación de ataque
         setImage(attackSprites[direction][attackFrame]);
-        attackFrame = (attackFrame + 1) % 2; // Alternar entre dos frames de ataque
+        attackFrame = (attackFrame + 1) % 2;
         attacking = false;
     }
     
@@ -142,7 +144,6 @@ public class Monster extends Actor
     
         return null; // Retorna null si no se encontró ningún objeto en rango
     }
-
     private void moveAndAnimate(int newDirection) {
         // Cambiar la imagen del monstruo para la animación
         if (newDirection != direction) {
@@ -173,7 +174,7 @@ public class Monster extends Actor
         }
 
         // Verificar colisiones y mover al monstruo
-        if (!isCollidingWithTile(dx, dy)) {
+        if (!isCollidingWithTile(dx, dy)){
             setLocation(getX() + dx, getY() + dy); 
         } else {
             // Cambiar de dirección
@@ -183,7 +184,9 @@ public class Monster extends Actor
     }
     
     private boolean isSolidTile(int tileType) {
-        return tileType == 1 || tileType == 2 || tileType == 4;
+         return tileType == 16 || tileType == 18 || tileType == 19 || tileType == 20 || tileType == 21 || tileType == 22 || tileType == 23 || tileType == 24
+            || tileType == 25 || tileType == 26 || tileType == 27 || tileType == 28 || tileType == 29 || tileType == 30 || tileType == 31
+            || tileType == 32 || tileType == 33 || tileType == 34 || tileType == 35; 
     }
     
     private boolean isCollidingWithTile(int dx, int dy) {
@@ -213,4 +216,18 @@ public class Monster extends Actor
         World world = getWorld();
         return x < 0 || y < 0 || x >= world.getWidth() || y >= world.getHeight();
     }
+    
+     private boolean isCollidingWithPlayer(int dx, int dy) {
+        Actor player = getOneObjectAtOffset(dx, dy, Protagonic.class);
+        return player != null;
+    }
+    
+    public void reduceLife(int damage) {
+        actual_life -= damage;
+        if (actual_life <= 0) {
+            // Lógica de muerte del enemigo
+            getWorld().removeObject(this);
+        }
+    }
+    
 }

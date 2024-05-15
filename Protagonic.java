@@ -20,9 +20,11 @@ public class Protagonic extends Actor {
     private int spriteWidth = 50; 
     private int spriteHeight = 50; 
     private GreenfootImage[][] sprites; // Matriz de imágenes para los sprites del jugador
+    private GreenfootImage[][] attacksprites;
     private int direction; // Dirección actual del jugador (0: arriba, 1: abajo, 2: izquierda, 3: derecha)
     private int animationDelay = 10; // Delay entre cambios de sprite
     private int delayCount = 0;
+    private boolean attacking = false;
     
     //si
     private ObjectSetter objectSetter;
@@ -42,11 +44,24 @@ public class Protagonic extends Actor {
         sprites[3][0] = scaleImage(new GreenfootImage("/player/right_sprite1.png"), spriteWidth, spriteHeight);
         sprites[3][1] = scaleImage(new GreenfootImage("/player/right_sprite2.png"), spriteWidth, spriteHeight);
 
+        
+        attacksprites = new GreenfootImage[4][2];
+        attacksprites[0][0] = scaleImage(new GreenfootImage("/player/attack_up1.png"), 60, 90);
+        attacksprites[0][1] = scaleImage(new GreenfootImage("/player/attack_up2.png"), 60, 90);
+        attacksprites[1][0] = scaleImage(new GreenfootImage("/player/attack_down1.png"), 60, 90);
+        attacksprites[1][1] = scaleImage(new GreenfootImage("/player/attack_down2.png"), 60, 90);
+        attacksprites[2][0] = scaleImage(new GreenfootImage("/player/attack_left1.png"), 90, 60);
+        attacksprites[2][1] = scaleImage(new GreenfootImage("/player/attack_left2.png"), 90, 60);
+        attacksprites[3][0] = scaleImage(new GreenfootImage("/player/attack_right1.png"), 90, 60);
+        attacksprites[3][1] = scaleImage(new GreenfootImage("/player/attack_right2.png"), 90, 60);
+
+        
         direction = 1; 
 
         setImage(sprites[direction][0]);
         inventory = new ArrayList<SuperObject>();
         life = max_life;
+        attack = 1;
         
         this.statsWindow = new StatsWindow(this);
     }
@@ -72,6 +87,9 @@ public class Protagonic extends Actor {
             } else {
                 showInventoryWindow();
             }
+        }
+        if (Greenfoot.isKeyDown("f")) {
+            attack();
         }
     }
     
@@ -205,6 +223,48 @@ public class Protagonic extends Actor {
             world.removeObject(world.getObjects(StatsWindow.class).get(0)); // Eliminar instancia anterior (si hay alguna)
         }
         world.addObject(statsWindow, 75, 90);
+    }
+    
+    private void attack() {
+      if (!attacking) {
+        attacking = true;
+        
+        // Guardar la posición actual del jugador
+        int startX = getX();
+        int startY = getY();
+        
+        // Cambiar la imagen a la de ataque
+        if(direction == 0){
+            setLocation(startX, startY - 20);
+        } else if(direction == 1){
+            setLocation(startX, startY +20);
+        } else if( direction == 2){
+            setLocation(startX - 20, startY);
+        }else{
+            setLocation(startX +20, startY );
+        }
+        
+        setImage(attacksprites[direction][0]);
+        
+        Greenfoot.delay(10);
+        
+        // Cambiar al segundo sprite de la animación de ataque
+        setImage(attacksprites[direction][1]);
+        
+        // Hit detection
+        Monster enemy = (Monster) getOneIntersectingObject(Monster.class);
+        if (enemy != null) {
+            enemy.reduceLife(attack);
+        }
+        
+        Greenfoot.delay(10);
+        
+        // Restaurar la imagen y la posición del jugador
+        setImage(sprites[direction][0]);
+        setLocation(startX, startY);
+        
+        attacking = false;
+        }
     }
     
     public int getSpeed() {
