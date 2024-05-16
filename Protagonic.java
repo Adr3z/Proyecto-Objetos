@@ -91,7 +91,27 @@ public class Protagonic extends Actor {
         if (Greenfoot.isKeyDown("f")) {
             attack();
         }
+        if (isAtEdge()) {
+            int newMapIndex = calculateNewMapIndex();
+            // Obtener el MapManager del mundo actual
+            MapManager mapManager = ((GameWorld) getWorld()).getMapManager();
+            // Cambiar al siguiente mapa y dirección apropiada
+            mapManager.changeMap(newMapIndex, direction);
+        }
     }
+    
+    private int calculateNewMapIndex() {
+        // Obtener el MapManager del mundo actual
+        MapManager mapManager = ((GameWorld) getWorld()).getMapManager();
+        // Obtener el índice actual del mapa
+        int currentMapIndex = ((GameWorld) getWorld()).getCurrentMapIndex();
+        // Obtener las conexiones del mapa actual
+        int[] connectedMaps = mapManager.getConnectedMaps(currentMapIndex);
+        // Calcular el nuevo índice del mapa según la dirección del jugador
+        int newMapIndex = connectedMaps[direction];
+        return newMapIndex;
+    }
+
     
     private void showInventoryWindow() {
         InventoryWindow inventoryWindow = new InventoryWindow(this);
@@ -246,25 +266,26 @@ public class Protagonic extends Actor {
         
         setImage(attacksprites[direction][0]);
         
+        // Esperar un corto tiempo antes de cambiar al segundo sprite de la animación
         Greenfoot.delay(10);
         
         // Cambiar al segundo sprite de la animación de ataque
         setImage(attacksprites[direction][1]);
         
-        // Hit detection
+        // Realizar el ataque
         Monster enemy = (Monster) getOneIntersectingObject(Monster.class);
         if (enemy != null) {
             enemy.reduceLife(attack);
         }
         
+        // Esperar un corto tiempo antes de restaurar la imagen y la posición del jugador
         Greenfoot.delay(10);
-        
-        // Restaurar la imagen y la posición del jugador
+                    // Restaurar la imagen y la posición del jugador
         setImage(sprites[direction][0]);
         setLocation(startX, startY);
         
         attacking = false;
-        }
+      }
     }
     
     public int getSpeed() {
