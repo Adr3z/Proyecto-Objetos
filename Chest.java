@@ -30,7 +30,9 @@ public class Chest extends SuperObject {
     public void Opening() {
         if (!open) {
             open = true;
-            setImage("open_chest.png");
+            GreenfootImage image = new GreenfootImage("/Objects/open_chest.png");
+            image.scale(40,40);
+            setImage(image);
             if (reward != null) {
                 getWorld().addObject(reward, getX(), getY());
             }
@@ -39,5 +41,9 @@ public class Chest extends SuperObject {
 
     public SuperObject getReward() {
         return reward;
+    }
+    
+    public boolean isSolid() {
+        return true;
     }
 }

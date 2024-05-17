@@ -1,5 +1,7 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.ArrayList;
+import java.util.List;
+
 /**
  * PROTAGONIC
  * ADREEZ
@@ -91,6 +93,9 @@ public class Protagonic extends Actor {
         if (Greenfoot.isKeyDown("f")) {
             attack();
         }
+        if (Greenfoot.isKeyDown("x")) {
+            checkForCofres();
+        }
         if (isAtEdge()) {
             int newMapIndex = calculateNewMapIndex();
             // Obtener el MapManager del mundo actual
@@ -122,6 +127,43 @@ public class Protagonic extends Actor {
         World world = getWorld();
         if (world != null) {
             world.removeObjects(world.getObjects(InventoryWindow.class));
+        }
+    }
+
+    private void checkForCofres() {
+        int range = 50; // Rango de detección para los cofres
+        List<Chest> cofres = getObjectsInRange(range, Chest.class);
+        for (Chest cofre : cofres) {
+            if (isTouching(cofre.getClass())) {
+                if (cofre.needKey() && hasKey()) {
+                    cofre.Opening();
+                    useKey();
+                    collectObjects(cofre.getReward().getClass());
+                } else if (!cofre.needKey()) {
+                    cofre.Opening();
+                    collectObjects(cofre.getReward().getClass());
+                } else {
+                    
+                }
+            }
+        }
+    }
+    
+    public boolean hasKey() {
+        for (SuperObject obj : inventory) {
+            if (obj instanceof Obj_Key) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public void useKey() {
+        for (SuperObject obj : inventory) {
+            if (obj instanceof Obj_Key) {
+                inventory.remove(obj);
+                break;
+            }
         }
     }
     
@@ -203,13 +245,34 @@ public class Protagonic extends Actor {
             setLocation(tileRight.getX() - tileRight.getImage().getWidth() / 2 - spriteWidth / 2 - 1, playerY);
         }
         
-        for (SuperObject obj : objectSetter.obj) {
+        //REVISAR COLISIONES CON LOS COFRES 
+        for (Chest chest : getWorld().getObjects(Chest.class)) {
+        if (isTouching(chest.getClass())) {
+            // Verificar si el jugador está colisionando con el cofre
+            if (getOneIntersectingObject(Chest.class) != null) {
+                int dx = 0;
+                int dy = 0;
+                if (direction == 0) {
+                    dy = -speed;
+                } else if (direction == 1) {
+                    dy = speed;
+                } else if (direction == 2) {
+                    dx = -speed;
+                } else if (direction == 3) {
+                    dx = speed;
+                }
+                //setLocation(getX() - dx, getY() - dy);
+            }
+        }
+    }
+
+        /*for (SuperObject obj : objectSetter.obj) {
             // Verificar colisión con el objeto
             if (isTouching(obj.getClass())) {
                 // Realizar la interacción específica para ese objeto
                 collectObjects(obj.getClass());
             }
-        }
+        }*/
     }
     
     private void collectObjects(Class<?> cls) {
@@ -266,7 +329,6 @@ public class Protagonic extends Actor {
         
         setImage(attacksprites[direction][0]);
         
-        // Esperar un corto tiempo antes de cambiar al segundo sprite de la animación
         Greenfoot.delay(10);
         
         // Cambiar al segundo sprite de la animación de ataque
@@ -278,9 +340,8 @@ public class Protagonic extends Actor {
             enemy.reduceLife(attack);
         }
         
-        // Esperar un corto tiempo antes de restaurar la imagen y la posición del jugador
         Greenfoot.delay(10);
-                    // Restaurar la imagen y la posición del jugador
+        // Restaurar la imagen y la posición del jugador
         setImage(sprites[direction][0]);
         setLocation(startX, startY);
         
