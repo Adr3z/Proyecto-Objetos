@@ -74,6 +74,25 @@ public class Protagonic extends Actor {
     }
     
    public void act() {
+        for (Chest chest : getWorld().getObjects(Chest.class)) {
+        if (isTouching(chest.getClass())) {
+            // Verificar si el jugador está colisionando con el cofre
+            if (getOneIntersectingObject(Chest.class) != null) {
+                int dx = 0;
+                int dy = 0;
+                if (direction == 0) {
+                    dy = -speed;
+                } else if (direction == 1) {
+                    dy = speed;
+                } else if (direction == 2) {
+                    dx = -speed;
+                } else if (direction == 3) {
+                    dx = speed;
+                }
+                setLocation(getX() - dx, getY() - dy); 
+            }
+        }
+        }
         if (Greenfoot.isKeyDown("up")) {
             moveAndAnimate(0); 
         } else if (Greenfoot.isKeyDown("down")) {
@@ -182,7 +201,8 @@ public class Protagonic extends Actor {
                 delayCount = 0; // Reiniciar el contador de delay
             }
         }
-    
+
+
         // Mover al jugador en la nueva dirección
         int dx = 0;
         int dy = 0;
@@ -246,7 +266,7 @@ public class Protagonic extends Actor {
         }
         
         //REVISAR COLISIONES CON LOS COFRES 
-        for (Chest chest : getWorld().getObjects(Chest.class)) {
+        /*for (Chest chest : getWorld().getObjects(Chest.class)) {
         if (isTouching(chest.getClass())) {
             // Verificar si el jugador está colisionando con el cofre
             if (getOneIntersectingObject(Chest.class) != null) {
@@ -264,7 +284,7 @@ public class Protagonic extends Actor {
                 //setLocation(getX() - dx, getY() - dy);
             }
         }
-    }
+    }*/
 
         /*for (SuperObject obj : objectSetter.obj) {
             // Verificar colisión con el objeto
