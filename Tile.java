@@ -27,7 +27,7 @@ public class Tile extends Actor {
      public boolean isSolid(int tileType) {
         return tileType == 16 || tileType == 18 || tileType == 19 || tileType == 20 || tileType == 21 || tileType == 22 || tileType == 23 || tileType == 24
             || tileType == 25 || tileType == 26 || tileType == 27 || tileType == 28 || tileType == 29 || tileType == 30 || tileType == 31
-            || tileType == 32 || tileType == 33 || tileType == 34 || tileType == 35; 
+            || tileType == 32 || tileType == 33 || tileType == 34 || tileType == 35 || tileType == 38; 
     }
     
      private String getImageNameForTileType(int tileType) {
@@ -108,6 +108,16 @@ public class Tile extends Actor {
                 return "/Tiles/036.png";
             case 37:
                 return "/Tiles/037.png";
+            case 38:
+                return "/Tiles/038.jpg";
+            case 39:
+                return "/Tiles/039.jpg";
+            case 40:
+                return "/Tiles/040.jpg";
+            case 41:
+                return "/Tiles/041.jpg";
+            case 42:
+                return "/Tiles/042.jpg";
             default:
                 return null;
         }
