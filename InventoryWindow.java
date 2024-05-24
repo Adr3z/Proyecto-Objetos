@@ -74,25 +74,25 @@ public class InventoryWindow extends Actor {
     }
 }
 
-private void useSelectedItem() {
-    if (selectedItem instanceof Obj_Key) {
-        // No hacer nada si es una llave
-    } else if (selectedItem instanceof PotionRed) {
-        if (player.getLife() < player.getMaxLife()) {
-            player.useItem(selectedItem);
+    private void useSelectedItem() {
+        if (selectedItem instanceof Obj_Key) {
+         // No hacer nada si es una llave
+        } else if (selectedItem instanceof PotionRed) {
+            if (player.getLife() < player.getMaxLife()) {
+                player.useItem(selectedItem);
+                items.remove(selectedItem);
+            } else {
+
+            }
+        } else if (selectedItem instanceof Boots || selectedItem instanceof ShieldWood || selectedItem instanceof ShieldBlue || selectedItem instanceof SwordNormal || selectedItem instanceof SwordDiamond || selectedItem instanceof SwordPurple) {
+            player.equipItem(selectedItem);
             items.remove(selectedItem);
         } else {
-
+            player.useItem(selectedItem);
+            items.remove(selectedItem);
         }
-    } else if (selectedItem instanceof Boots || selectedItem instanceof ShieldWood || selectedItem instanceof ShieldBlue || selectedItem instanceof SwordNormal || selectedItem instanceof SwordDiamond || selectedItem instanceof SwordPurple) {
-        player.equipItem(selectedItem);
-        items.remove(selectedItem);
-    } else {
-        player.useItem(selectedItem);
-        items.remove(selectedItem);
+        updateInventory();
+        itemClicked = false; 
     }
-    updateInventory();
-    itemClicked = false; // Restablecer el estado de clic después de consumir el objeto
-}
 
 }
