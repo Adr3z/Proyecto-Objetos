@@ -29,9 +29,10 @@ public class MapManager {
     int startX = world.getProtagonist().getX();
     int startY = world.getProtagonist().getY();
     
+    world.mapIndex = newMapIndex;
+    
     // Cargar el nuevo mapa
     world.loadmap(mapFiles[newMapIndex - 1]);
-    world.mapIndex = newMapIndex;
 
     // Obtener la referencia al protagonista del mundo
     Protagonic protagonist = world.getProtagonist();

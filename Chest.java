@@ -1,4 +1,6 @@
 import greenfoot.*;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * 
@@ -6,16 +8,16 @@ import greenfoot.*;
  * 
  */
 public class Chest extends SuperObject {
-    private SuperObject reward;
+    private List<SuperObject> rewards;
     private boolean needKey;
     private boolean open;
 
-    public Chest(SuperObject recompensa, boolean necesitaLlave) {
-        this.reward = recompensa;
+    public Chest(List<SuperObject> recompensas, boolean necesitaLlave) {
+        this.rewards = new ArrayList<>(recompensas);
         this.needKey = necesitaLlave;
         this.open = false;
         GreenfootImage image = new GreenfootImage("/Objects/closed_chest.png");
-        image.scale(40,40);
+        image.scale(40, 40);
         setImage(image);
     }
 
@@ -31,19 +33,25 @@ public class Chest extends SuperObject {
         if (!open) {
             open = true;
             GreenfootImage image = new GreenfootImage("/Objects/open_chest.png");
-            image.scale(40,40);
+            image.scale(40, 40);
             setImage(image);
-            if (reward != null) {
-                getWorld().addObject(reward, getX(), getY());
+            if (rewards != null) {
+                for (SuperObject reward : rewards) {
+                    getWorld().addObject(reward, getX(), getY());
+                }
             }
         }
     }
 
-    public SuperObject getReward() {
-        return reward;
+    public List<SuperObject> getRewards() {
+        return rewards;
     }
     
-    public boolean isSolid() {
-        return true;
+    public void setOpen(boolean isOpen) {
+        this.open = true;
+        GreenfootImage image = new GreenfootImage("/Objects/open_chest.png");
+        image.scale(40, 40);
+        setImage(image);
     }
+
 }

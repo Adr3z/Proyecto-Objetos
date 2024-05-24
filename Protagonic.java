@@ -14,7 +14,6 @@ public class Protagonic extends Actor {
     private int life;
     private int level;
     private int money;
-    private int strength;
     private int attack;
     private int defense;
     
@@ -72,7 +71,7 @@ public class Protagonic extends Actor {
         image.scale(width, height);
         return image;
     }
-    
+
    public void act() {
         for (Chest chest : getWorld().getObjects(Chest.class)) {
         if (isTouching(chest.getClass())) {
@@ -150,20 +149,29 @@ public class Protagonic extends Actor {
     }
 
     private void checkForCofres() {
-        int range = 50; // Rango de detección para los cofres
+        int range = 50;
         List<Chest> cofres = getObjectsInRange(range, Chest.class);
         for (Chest cofre : cofres) {
-            if (isTouching(cofre.getClass())) {
+            if (isTouching(cofre.getClass()) && !cofre.isOpen()) {
                 if (cofre.needKey() && hasKey()) {
                     cofre.Opening();
+                    objectSetter.setCofreAbierto(objectSetter.getCofres().indexOf(cofre), true);
                     useKey();
-                    collectObjects(cofre.getReward().getClass());
+                    addRewardsToInventory(cofre.getRewards());
                 } else if (!cofre.needKey()) {
                     cofre.Opening();
-                    collectObjects(cofre.getReward().getClass());
-                } else {
-                    
+                    objectSetter.setCofreAbierto(objectSetter.getCofres().indexOf(cofre), true);
+                    addRewardsToInventory(cofre.getRewards());
                 }
+            }
+        }
+    }
+    
+    private void addRewardsToInventory(List<SuperObject> rewards) {
+        if (rewards != null) {
+            for (SuperObject reward : rewards) {
+                inventory.add(reward);
+                getWorld().removeObject(reward);
             }
         }
     }
@@ -265,44 +273,38 @@ public class Protagonic extends Actor {
             setLocation(tileRight.getX() - tileRight.getImage().getWidth() / 2 - spriteWidth / 2 - 1, playerY);
         }
         
-        //REVISAR COLISIONES CON LOS COFRES 
-        /*for (Chest chest : getWorld().getObjects(Chest.class)) {
-        if (isTouching(chest.getClass())) {
-            // Verificar si el jugador está colisionando con el cofre
-            if (getOneIntersectingObject(Chest.class) != null) {
-                int dx = 0;
-                int dy = 0;
-                if (direction == 0) {
-                    dy = -speed;
-                } else if (direction == 1) {
-                    dy = speed;
-                } else if (direction == 2) {
-                    dx = -speed;
-                } else if (direction == 3) {
-                    dx = speed;
-                }
-                //setLocation(getX() - dx, getY() - dy);
-            }
-        }
-    }*/
-
-        /*for (SuperObject obj : objectSetter.obj) {
-            // Verificar colisión con el objeto
-            if (isTouching(obj.getClass())) {
-                // Realizar la interacción específica para ese objeto
-                collectObjects(obj.getClass());
-            }
-        }*/
     }
     
-    private void collectObjects(Class<?> cls) {
-        // Verificar si hay colisión con el objeto específico
-        Actor object = getOneIntersectingObject(cls);
-        // Si hay colisión con el objeto, eliminarlo del mundo
-        if (object != null) {
-            inventory.add((SuperObject)object);
-            getWorld().removeObject(object);
+     public void useItem(SuperObject object) {
+        if (object instanceof PotionRed) {
+            addLife(20);
+        } else if (object instanceof PotionPurple) {
+            addLevel(2);
+        } else if (object instanceof BlueHeart) {
+            addMaxLife(20);
+        } else if (object instanceof CoinBronze) {
+            addMoney(1);
+        } else if (object instanceof CoinGold) {
+            addMoney(5);
         }
+        inventory.remove(object);
+    }
+
+    public void equipItem(SuperObject object) {
+        if (object instanceof Boots) {
+            addSpeed(2);
+        } else if (object instanceof ShieldWood) {
+            addDefense(1);
+        } else if (object instanceof ShieldBlue) {
+            addDefense(3);
+        } else if (object instanceof SwordNormal) {
+            addAttack(3);
+        } else if (object instanceof SwordDiamond) {
+            addAttack(5);
+        } else if (object instanceof SwordPurple) {
+            addAttack(10);
+        }
+        inventory.remove(object);
     }
     
     private Actor getOneIntersectingObject(int xOffset, int yOffset, Class<?> cls) {
@@ -369,6 +371,45 @@ public class Protagonic extends Actor {
       }
     }
     
+    private void addLife(int amount) {
+        life += amount;
+        if (life > max_life) {
+            life = max_life;
+        }
+        statsWindow.drawStats(this);
+    }
+    
+    private void addMaxLife(int amount) {
+        max_life += amount;
+        life = max_life;
+        statsWindow.drawStats(this);
+    }
+    
+    private void addSpeed(int amount) {
+        speed += amount;
+        statsWindow.drawStats(this);
+    }
+    
+    private void addDefense(int amount) {
+        defense += amount;
+        statsWindow.drawStats(this);
+    }
+    
+    private void addAttack(int amount) {
+        attack += amount;
+        statsWindow.drawStats(this);
+    }
+    
+    private void addLevel(int amount) {
+        level += amount;
+        statsWindow.drawStats(this);
+    }
+    
+    private void addMoney(int amount) {
+        money += amount;
+        statsWindow.drawStats(this);
+    }
+    
     public int getSpeed() {
         return speed;
     }
@@ -383,10 +424,6 @@ public class Protagonic extends Actor {
 
     public int getLevel() {
         return level;
-    }
-
-    public int getStrength() {
-        return strength;
     }
 
     public int getAttack() {
