@@ -14,7 +14,8 @@ public class GameWorld extends World {
     public int mapIndex;
     private ObjectSetter objectPlacer = new ObjectSetter(this);
     private MapManager mapManager = new MapManager(this);
-    
+    private EnemiSetter enemigos= new EnemiSetter(this);
+
     private Protagonic protagonist;
     
     // Características del escenario
@@ -23,6 +24,7 @@ public class GameWorld extends World {
         loadmap("map07.txt");
         mapIndex = 7;
         objectPlacer.placeObjects(mapIndex);
+        enemigos.enemiMap(mapIndex);
     }
 
     public void loadmap(String filename) {
@@ -60,7 +62,7 @@ public class GameWorld extends World {
     }
    
     public void prepare() {
-        
+        enemigos.enemiMap(mapIndex);
    }
    
    public MapManager getMapManager(){

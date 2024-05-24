@@ -12,8 +12,8 @@ import java.util.List;
 
 public class MapManager {
     private GameWorld world;
-    private String[] mapFiles = {"map01.txt", "map02.txt", "map03.txt", "map04.txt", "map05.txt", "map06.txt", "map07.txt", "map08.txt", "map09.txt"};
-    private int[][] mapConnections = {{0,4,0, 2}, {0,5, 1, 3}, {0,6, 2,0}, {1,7,0,5}, {2,8,4,6}, {3,5,9,0}, {4,0,0, 8}, {5,0, 7, 9}, {6,0, 8,0}};
+    private String[] mapFiles = {"map01.txt", "map02.txt", "map03.txt", "map04.txt", "map05.txt", "map06.txt", "map07.txt", "map08.txt", "map09.txt","map10.txt"};
+    private int[][] mapConnections = {{10,4,0, 2}, {0,5, 1, 3}, {0,6, 2,0}, {1,7,0,5}, {2,8,4,6}, {3,9,5,0}, {4,0,0, 8}, {5,0, 7, 9}, {6,0, 8,0},{0,1,0,0}};
     
     public MapManager(GameWorld world) {
         this.world = world;

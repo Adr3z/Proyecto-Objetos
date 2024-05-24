@@ -225,7 +225,7 @@ public class Protagonic extends Actor {
     private boolean isSolidTile(int tileType) {
         return tileType == 16 || tileType == 18 || tileType == 19 || tileType == 20 || tileType == 21 || tileType == 22 || tileType == 23 || tileType == 24
             || tileType == 25 || tileType == 26 || tileType == 27 || tileType == 28 || tileType == 29 || tileType == 30 || tileType == 31
-            || tileType == 32 || tileType == 33 || tileType == 34 || tileType == 35; 
+            || tileType == 32 || tileType == 33 || tileType == 34 || tileType == 35 || tileType == 38; 
     }
     
     private boolean isCollidingWithTile(int dx, int dy) {
