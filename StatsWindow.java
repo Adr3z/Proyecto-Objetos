@@ -15,7 +15,7 @@ public class StatsWindow extends Actor {
     }
 
     public void drawStats(Protagonic player) {
-        GreenfootImage image = new GreenfootImage(100, 170);
+        GreenfootImage image = new GreenfootImage(100, 150);
         image.setColor(new Color(200, 200, 200, 180)); // Gris tenue con transparencia
         image.fill();
         image.setColor(Color.BLACK);
@@ -32,8 +32,6 @@ public class StatsWindow extends Actor {
         image.drawString("Max Life: " + player.getMaxLife(), x, y);
         y += lineHeight;
         image.drawString("Level: " + player.getLevel(), x, y);
-        y += lineHeight;
-        image.drawString("Strength: " + player.getStrength(), x, y);
         y += lineHeight;
         image.drawString("Attack: " + player.getAttack(), x, y);
         y += lineHeight;

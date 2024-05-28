@@ -12,7 +12,7 @@ public class Monster extends Actor
     private int agroRange = 100; // Rango de detección del jugador
     private int attackRange = 20; // Rango de ataque al jugador
     private int attackDamage = 10; // Daño del ataque
-    private int max_life = 4;
+    private int max_life = 20;
     private int actual_life;
 
     //sprites y delays
@@ -225,9 +225,16 @@ public class Monster extends Actor
     public void reduceLife(int damage) {
         actual_life -= damage;
         if (actual_life <= 0) {
-            // Lógica de muerte del enemigo
+            Protagonic player = (Protagonic) getOneIntersectingObject(Protagonic.class);
+            if (player != null) {
+                giveRewardsToPlayer(player);
+            }
             getWorld().removeObject(this);
         }
+    }
+    private void giveRewardsToPlayer(Protagonic player) {
+        player.addExperience(10);
+        player.addMoney(3);
     }
     
 }
