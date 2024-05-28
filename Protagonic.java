@@ -29,6 +29,13 @@ public class Protagonic extends Actor {
     private int delayCount = 0;
     private boolean attacking = false;
     
+    //Sonidos
+    private GreenfootSound attackSound;
+    private GreenfootSound coin;
+    private GreenfootSound levelup;
+    private GreenfootSound locked;
+    private GreenfootSound unlocked;
+    
     //si
     private ObjectSetter objectSetter;
     private ArrayList<SuperObject> inventory;
@@ -58,9 +65,16 @@ public class Protagonic extends Actor {
         attacksprites[3][0] = scaleImage(new GreenfootImage("/player/attack_right1.png"), 90, 60);
         attacksprites[3][1] = scaleImage(new GreenfootImage("/player/attack_right2.png"), 90, 60);
 
+        //Sonidos
+        attackSound = new GreenfootSound("hitmonster.wav");
+        coin = new GreenfootSound("coin.wav");
+        levelup = new GreenfootSound("powerup.wav");
+        locked = new GreenfootSound("blocked.wav");
+        unlocked = new GreenfootSound("unlock.wav");
         
+        
+        //Set Up
         direction = 1; 
-
         setImage(sprites[direction][0]);
         inventory = new ArrayList<SuperObject>();
         life = max_life;
@@ -157,6 +171,7 @@ public class Protagonic extends Actor {
         for (Chest cofre : cofres) {
             if (isTouching(cofre.getClass()) && !cofre.isOpen()) {
                 if (cofre.needKey() && hasKey()) {
+                    unlocked.play();
                     cofre.Opening();
                     objectSetter.setCofreAbierto(objectSetter.getCofres().indexOf(cofre), true);
                     useKey();
@@ -165,7 +180,8 @@ public class Protagonic extends Actor {
                     cofre.Opening();
                     objectSetter.setCofreAbierto(objectSetter.getCofres().indexOf(cofre), true);
                     addRewardsToInventory(cofre.getRewards());
-                }
+                }else
+                locked.play();
             }
         }
     }
@@ -336,6 +352,7 @@ public class Protagonic extends Actor {
     private void attack() {
       if (!attacking) {
         attacking = true;
+        attackSound.play();
         
         // Guardar la posición actual del jugador
         int startX = getX();
@@ -411,6 +428,7 @@ public class Protagonic extends Actor {
     public void addMoney(int amount) {
         money += amount;
         statsWindow.drawStats(this);
+        coin.play();
     }
     
     public void addExperience(int exp) {
@@ -427,7 +445,9 @@ public class Protagonic extends Actor {
         life = max_life; 
         attack += 3; 
         defense += 1; 
+        levelup.play();
     }
+    
     public int getSpeed() {
         return speed;
     }

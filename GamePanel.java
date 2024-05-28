@@ -59,6 +59,12 @@ public class GameWorld extends World {
             removeObject(protagonist);
         }
         addObject(protagonist, 175, 375); // Colocar al protagonista en la nueva posición
+        
+        if (mapIndex == 10){
+            enemigos.dungeon.play();
+        }else{
+            enemigos.dungeon.stop();
+        }
     }
    
     public void prepare() {
