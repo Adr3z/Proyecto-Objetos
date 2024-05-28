@@ -336,9 +336,6 @@ public class Protagonic extends Actor {
     
     public void reduceLife(int damage) {
         this.life -= damage; 
-        if (this.life <= 0) {
-            gameOver();
-        }
         statsWindow.drawStats(this);
     }
     
@@ -390,7 +387,7 @@ public class Protagonic extends Actor {
         attacking = false;
       }
     }
-    
+
     private void addLife(int amount) {
         life += amount;
         if (life > max_life) {
