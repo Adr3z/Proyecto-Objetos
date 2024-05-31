@@ -3,7 +3,6 @@ import greenfoot.*;
 /**
  * 
  * Adreez
- * estoy harta de hacer videojuegos saquenme de aquí
  */
 
 public class StatsWindow extends Actor {
@@ -15,6 +14,7 @@ public class StatsWindow extends Actor {
     }
 
     public void drawStats(Protagonic player) {
+        //Dimensiones y diseño
         GreenfootImage image = new GreenfootImage(100, 150);
         image.setColor(new Color(200, 200, 200, 180)); // Gris tenue con transparencia
         image.fill();
@@ -25,6 +25,7 @@ public class StatsWindow extends Actor {
         int y = 20;
         int lineHeight = 20;
 
+        //Escribir las stats
         image.drawString("Speed: " + player.getSpeed(), x, y);
         y += lineHeight;
         image.drawString("Life: " + player.getLife(), x, y);

@@ -5,14 +5,15 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * El hijo de su chingada madre cambio de mapa
  * Adreez
  * 15/05/24
  */
 
 public class MapManager {
     private GameWorld world;
+    //Mapas
     private String[] mapFiles = {"map01.txt", "map02.txt", "map03.txt", "map04.txt", "map05.txt", "map06.txt", "map07.txt", "map08.txt", "map09.txt","map10.txt"};
+    
     private int[][] mapConnections = {{10,4,0, 2}, {0,5, 1, 3}, {0,6, 2,0}, {1,7,0,5}, {2,8,4,6}, {3,9,5,0}, {4,0,0, 8}, {5,0, 7, 9}, {6,0, 8,0},{0,1,0,0}};
     
     public MapManager(GameWorld world) {
@@ -29,6 +30,7 @@ public class MapManager {
     int startX = world.getProtagonist().getX();
     int startY = world.getProtagonist().getY();
     
+    //Actualizar el indice del mapa
     world.mapIndex = newMapIndex;
     
     // Cargar el nuevo mapa

@@ -2,20 +2,13 @@ import greenfoot.*;
 import java.util.Random;
 
 /**
- * Write a description of class EnemiSetter here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Warvin
  */
 public class EnemiSetter  
 {
-    // instance variables - replace the example below with your own
     private World world;
     public Monster[] moustros;
 
-    /**
-     * Constructor for objects of class EnemiSetter
-     */
     public EnemiSetter(World world){
         this.world = world;
         moustros =new Monster [6];

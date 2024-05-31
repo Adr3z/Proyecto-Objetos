@@ -3,11 +3,11 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 /**
  * 
  * Adreez
- * Semestre ya acabate por favor
  */
 
 public class GameCompleteScreen extends World {
     public GameCompleteScreen() {
+    
         super(800, 600, 1);
         GreenfootImage bgImage = new GreenfootImage(800, 600);
         bgImage.setColor(Color.BLACK);
@@ -19,6 +19,7 @@ public class GameCompleteScreen extends World {
         MusicManager.playGameCompleteMusic();
     }
     
+    //Cambio de escena
     @Override
     public void act() {
         if (Greenfoot.isKeyDown("enter")) {
@@ -26,6 +27,7 @@ public class GameCompleteScreen extends World {
         }
     }
     
+    //Mostrar texto
     @Override
     public void showText(String text, int x, int y) {
         GreenfootImage textImage = new GreenfootImage(text, 24, Color.WHITE, new Color(0, 0, 0, 0));

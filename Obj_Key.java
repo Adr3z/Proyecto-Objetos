@@ -1,7 +1,6 @@
 import greenfoot.*; 
 
 /**
- * Clase para llaves(? idk man
  * Adreez
  * 25/04/24
  */

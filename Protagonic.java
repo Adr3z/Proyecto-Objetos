@@ -36,7 +36,7 @@ public class Protagonic extends Actor {
     private GreenfootSound locked;
     private GreenfootSound unlocked;
     
-    //si
+    //Otras cosas
     private ObjectSetter objectSetter;
     private ArrayList<SuperObject> inventory;
     private StatsWindow statsWindow;
@@ -84,12 +84,7 @@ public class Protagonic extends Actor {
         this.statsWindow = new StatsWindow(this);
     }
     
-    private GreenfootImage scaleImage(GreenfootImage image, int width, int height) {
-        image.scale(width, height);
-        return image;
-    }
-
-   public void act() {
+    public void act() {
         for (Chest chest : getWorld().getObjects(Chest.class)) {
         if (isTouching(chest.getClass())) {
             // Verificar si el jugador está colisionando con el cofre
@@ -139,7 +134,50 @@ public class Protagonic extends Actor {
             mapManager.changeMap(newMapIndex, direction);
         }
     }
+
+    //Animaciones
+    private GreenfootImage scaleImage(GreenfootImage image, int width, int height) {
+        image.scale(width, height);
+        return image;
+    }
+
+    private void moveAndAnimate(int newDirection) {
+        // Cambiar la imagen del jugador para la animación
+        if (newDirection != direction) {
+            direction = newDirection;
+            setImage(sprites[direction][0]); // Mostrar el primer sprite de la nueva dirección
+            delayCount = 0; // Reiniciar el contador de delay
+        } else {
+            // Incrementar el contador de delay
+            delayCount++;
+            // Cambiar al siguiente sprite de la animación
+            if (delayCount >= animationDelay) {
+                setImage(sprites[direction][(getImage().equals(sprites[direction][0])) ? 1 : 0]);
+                delayCount = 0; // Reiniciar el contador de delay
+            }
+        }
+
+
+        // Mover al jugador en la nueva dirección
+        int dx = 0;
+        int dy = 0;
+        if (newDirection == 0) {
+            dy = -speed; 
+        } else if (newDirection == 1) {
+            dy = speed; 
+        } else if (newDirection == 2) {
+            dx = -speed; 
+        } else if (newDirection == 3) {
+            dx = speed; 
+        }
+
+        checkCollisions();
+        if (!isCollidingWithTile(dx, dy)) {
+            setLocation(getX() + dx, getY() + dy); 
+        }
+    }
     
+    //Mapa
     private int calculateNewMapIndex() {
         // Obtener el MapManager del mundo actual
         MapManager mapManager = ((GameWorld) getWorld()).getMapManager();
@@ -152,6 +190,10 @@ public class Protagonic extends Actor {
         return newMapIndex;
     }
 
+    //Funciones de inventario y recolección de objetos
+    public ArrayList<SuperObject> getInventory() {
+        return inventory;
+    }
     
     private void showInventoryWindow() {
         InventoryWindow inventoryWindow = new InventoryWindow(this);
@@ -213,42 +255,51 @@ public class Protagonic extends Actor {
         }
     }
     
-    private void moveAndAnimate(int newDirection) {
-        // Cambiar la imagen del jugador para la animación
-        if (newDirection != direction) {
-            direction = newDirection;
-            setImage(sprites[direction][0]); // Mostrar el primer sprite de la nueva dirección
-            delayCount = 0; // Reiniciar el contador de delay
-        } else {
-            // Incrementar el contador de delay
-            delayCount++;
-            // Cambiar al siguiente sprite de la animación
-            if (delayCount >= animationDelay) {
-                setImage(sprites[direction][(getImage().equals(sprites[direction][0])) ? 1 : 0]);
-                delayCount = 0; // Reiniciar el contador de delay
-            }
+    public void useItem(SuperObject object) {
+        if (object instanceof PotionRed) {
+            addLife(20);
+        } else if (object instanceof PotionPurple) {
+            addLevel(2);
+        } else if (object instanceof BlueHeart) {
+            addMaxLife(20);
+        } else if (object instanceof CoinBronze) {
+            addMoney(1);
+        } else if (object instanceof CoinGold) {
+            addMoney(5);
         }
+        inventory.remove(object);
+    }
 
-
-        // Mover al jugador en la nueva dirección
-        int dx = 0;
-        int dy = 0;
-        if (newDirection == 0) {
-            dy = -speed; 
-        } else if (newDirection == 1) {
-            dy = speed; 
-        } else if (newDirection == 2) {
-            dx = -speed; 
-        } else if (newDirection == 3) {
-            dx = speed; 
+    public void equipItem(SuperObject object) {
+        if (object instanceof Boots) {
+            addSpeed(2);
+        } else if (object instanceof ShieldWood) {
+            addDefense(1);
+        } else if (object instanceof ShieldBlue) {
+            addDefense(3);
+        } else if (object instanceof SwordNormal) {
+            addAttack(3);
+        } else if (object instanceof SwordDiamond) {
+            addAttack(5);
+        } else if (object instanceof SwordPurple) {
+            addAttack(10);
         }
-
-        checkCollisions();
-        if (!isCollidingWithTile(dx, dy)) {
-            setLocation(getX() + dx, getY() + dy); 
-        }
+        inventory.remove(object);
     }
     
+    private Actor getOneIntersectingObject(int xOffset, int yOffset, Class<?> cls) {
+        return getOneObjectAtOffset(xOffset, yOffset, cls);
+    }
+
+    public void addedToWorld(World world) {
+        if (!world.getObjects(StatsWindow.class).isEmpty()) {
+            world.removeObject(world.getObjects(StatsWindow.class).get(0)); // Eliminar instancia anterior (si hay alguna)
+        }
+        world.addObject(statsWindow, 75, 90);
+    }
+    
+
+    //Colisiones
     private boolean isSolidTile(int tileType) {
         return tileType == 16 || tileType == 18 || tileType == 19 || tileType == 20 || tileType == 21 || tileType == 22 || tileType == 23 || tileType == 24
             || tileType == 25 || tileType == 26 || tileType == 27 || tileType == 28 || tileType == 29 || tileType == 30 || tileType == 31
@@ -294,100 +345,54 @@ public class Protagonic extends Actor {
         
     }
     
-     public void useItem(SuperObject object) {
-        if (object instanceof PotionRed) {
-            addLife(20);
-        } else if (object instanceof PotionPurple) {
-            addLevel(2);
-        } else if (object instanceof BlueHeart) {
-            addMaxLife(20);
-        } else if (object instanceof CoinBronze) {
-            addMoney(1);
-        } else if (object instanceof CoinGold) {
-            addMoney(5);
+    //Attack functions
+    private void attack() {
+        if (!attacking) {
+          attacking = true;
+          attackSound.play();
+          
+          // Guardar la posición actual del jugador
+          int startX = getX();
+          int startY = getY();
+          
+          // Cambiar la imagen a la de ataque
+          if(direction == 0){
+              setLocation(startX, startY - 20);
+          } else if(direction == 1){
+              setLocation(startX, startY +20);
+          } else if( direction == 2){
+              setLocation(startX - 20, startY);
+          }else{
+              setLocation(startX +20, startY );
+          }
+          
+          setImage(attacksprites[direction][0]);
+          
+          Greenfoot.delay(10);
+          
+          // Cambiar al segundo sprite de la animación de ataque
+          setImage(attacksprites[direction][1]);
+          
+          // Realizar el ataque
+          Monster enemy = (Monster) getOneIntersectingObject(Monster.class);
+          if (enemy != null) {
+              enemy.reduceLife(attack);
+          }
+          
+          Greenfoot.delay(10);
+          // Restaurar la imagen y la posición del jugador
+          setImage(sprites[direction][0]);
+          setLocation(startX, startY);
+          
+          attacking = false;
         }
-        inventory.remove(object);
-    }
+      }
 
-    public void equipItem(SuperObject object) {
-        if (object instanceof Boots) {
-            addSpeed(2);
-        } else if (object instanceof ShieldWood) {
-            addDefense(1);
-        } else if (object instanceof ShieldBlue) {
-            addDefense(3);
-        } else if (object instanceof SwordNormal) {
-            addAttack(3);
-        } else if (object instanceof SwordDiamond) {
-            addAttack(5);
-        } else if (object instanceof SwordPurple) {
-            addAttack(10);
-        }
-        inventory.remove(object);
-    }
-    
-    private Actor getOneIntersectingObject(int xOffset, int yOffset, Class<?> cls) {
-        return getOneObjectAtOffset(xOffset, yOffset, cls);
-    }
-    
-    public ArrayList<SuperObject> getInventory() {
-        return inventory;
-    }
-    
+    //Setters
     public void reduceLife(int damage) {
         this.life -= damage; 
         statsWindow.drawStats(this);
     }
-    
-    public void addedToWorld(World world) {
-        if (!world.getObjects(StatsWindow.class).isEmpty()) {
-            world.removeObject(world.getObjects(StatsWindow.class).get(0)); // Eliminar instancia anterior (si hay alguna)
-        }
-        world.addObject(statsWindow, 75, 90);
-    }
-    
-    private void attack() {
-      if (!attacking) {
-        attacking = true;
-        attackSound.play();
-        
-        // Guardar la posición actual del jugador
-        int startX = getX();
-        int startY = getY();
-        
-        // Cambiar la imagen a la de ataque
-        if(direction == 0){
-            setLocation(startX, startY - 20);
-        } else if(direction == 1){
-            setLocation(startX, startY +20);
-        } else if( direction == 2){
-            setLocation(startX - 20, startY);
-        }else{
-            setLocation(startX +20, startY );
-        }
-        
-        setImage(attacksprites[direction][0]);
-        
-        Greenfoot.delay(10);
-        
-        // Cambiar al segundo sprite de la animación de ataque
-        setImage(attacksprites[direction][1]);
-        
-        // Realizar el ataque
-        Monster enemy = (Monster) getOneIntersectingObject(Monster.class);
-        if (enemy != null) {
-            enemy.reduceLife(attack);
-        }
-        
-        Greenfoot.delay(10);
-        // Restaurar la imagen y la posición del jugador
-        setImage(sprites[direction][0]);
-        setLocation(startX, startY);
-        
-        attacking = false;
-      }
-    }
-
     private void addLife(int amount) {
         life += amount;
         if (life > max_life) {
@@ -444,7 +449,8 @@ public class Protagonic extends Actor {
         defense += 1; 
         levelup.play();
     }
-    
+
+    //Getters
     public int getSpeed() {
         return speed;
     }

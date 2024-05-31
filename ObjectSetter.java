@@ -16,19 +16,19 @@ public class ObjectSetter {
     public ObjectSetter(World world) {
         this.world = world;
         this.cofres = new ArrayList<>();
-        this.cofresAbiertos = new ArrayList<>();
+        this.cofresAbiertos = new ArrayList<>(); //Registro de los cofres abiertos para evitar el reset
         initializeCofres();
     }
     
     private void initializeCofres() {
         // Crear y agregar los cofres al mundo
-        cofres.add(new Chest(createRewardsForMapIndex(2, true), true)); // Cofre 1
-        cofres.add(new Chest(createRewardsForMapIndex(3, true), true)); // Cofre 2
-        cofres.add(new Chest(createRewardsForMapIndex(5, false), false)); // Cofre 3
-        cofres.add(new Chest(createRewardsForMapIndex(5, true), true)); // Cofre que necesita llave
-        cofres.add(new Chest(createRewardsForMapIndex(7, false), false)); // Cofre 5
-        cofres.add(new Chest(createRewardsForMapIndex(8, false), false)); // Cofre 6
-        cofres.add(new Chest(createRewardsForMapIndex(9, false), false)); // Cofre 7
+        cofres.add(new Chest(createRewardsForMapIndex(2, true), true)); 
+        cofres.add(new Chest(createRewardsForMapIndex(3, true), true)); 
+        cofres.add(new Chest(createRewardsForMapIndex(5, false), false)); 
+        cofres.add(new Chest(createRewardsForMapIndex(5, true), true)); 
+        cofres.add(new Chest(createRewardsForMapIndex(7, false), false)); 
+        cofres.add(new Chest(createRewardsForMapIndex(8, false), false)); 
+        cofres.add(new Chest(createRewardsForMapIndex(9, false), false)); 
 
         // Establecer que todos los cofres están cerrados por defecto
         for (int i = 0; i < cofres.size(); i++) {
@@ -38,7 +38,7 @@ public class ObjectSetter {
     
     private List<SuperObject> createRewardsForMapIndex(int mapIndex, boolean needsKey) {
         List<SuperObject> rewards = new ArrayList<>();
-        // Agregamos las recompensas correspondientes al mapa
+        // Agregar las recompensas segun el mapa
         if (mapIndex == 2 && needsKey) {
             rewards.add(new Obj_Key());
             rewards.add(new SwordPurple());
@@ -93,6 +93,7 @@ public class ObjectSetter {
     }
     
     private void placeCofre(int col, int row, int index) {
+        //Posición
         int tileWidth = 50;
         int tileHeight = 50;
         int worldX = col * tileWidth;

@@ -3,7 +3,6 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 /**
  * 
  * Adreez
- * No sé, cosillas de UIX
  */
 
 public class GameOverScreen extends World {

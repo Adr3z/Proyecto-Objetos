@@ -79,6 +79,7 @@ public class Monster extends Actor
         }
     }
     
+    //Attack functions
      private void detectPlayer() {
         Protagonic player = (Protagonic) getOneObjectInRange(agroRange, Protagonic.class);
         if (player != null && !attacking) {
@@ -144,6 +145,8 @@ public class Monster extends Actor
     
         return null; // Retorna null si no se encontró ningún objeto en rango
     }
+
+    //Movimiento
     private void moveAndAnimate(int newDirection) {
         // Cambiar la imagen del monstruo para la animación
         if (newDirection != direction) {
@@ -222,6 +225,7 @@ public class Monster extends Actor
         return player != null;
     }
     
+    //Muerte y recompensas
     public void reduceLife(int damage) {
         actual_life -= damage;
         if (actual_life <= 0) {

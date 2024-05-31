@@ -2,7 +2,7 @@ import greenfoot.*;
 import java.util.ArrayList;
 
 public class InventoryWindow extends Actor {
-    
+    //Dimensiones
     private static final int WIDTH = 400;
     private static final int HEIGHT = 200;
     private static final int X_OFFSET = 50;
@@ -76,7 +76,7 @@ public class InventoryWindow extends Actor {
 
     private void useSelectedItem() {
         if (selectedItem instanceof Obj_Key) {
-         // No hacer nada si es una llave
+
         } else if (selectedItem instanceof PotionRed) {
             if (player.getLife() < player.getMaxLife()) {
                 player.useItem(selectedItem);

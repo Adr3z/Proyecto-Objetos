@@ -23,7 +23,6 @@ public class GameWorld extends World {
         objectPlacer.placeObjects(mapIndex);
         enemigos.enemiMap(mapIndex);
         
-        // Reproduce la música de fondo
         MusicManager.playBackgroundMusic();
     }
 

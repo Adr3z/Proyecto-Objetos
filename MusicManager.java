@@ -6,6 +6,8 @@ import greenfoot.*;
  */
 
 public class MusicManager {
+
+    //Listado de sonidos
     private static GreenfootSound backgroundMusic = new GreenfootSound("gamesound.wav");
     private static GreenfootSound dungeonMusic = new GreenfootSound("Dungeon.wav");
     private static GreenfootSound gameOverMusic = new GreenfootSound("gameover.wav");
@@ -13,6 +15,7 @@ public class MusicManager {
     
     private static GreenfootSound currentMusic = null;
 
+    //Loop para el sonido principal 
     public static void playBackgroundMusic() {
         if (currentMusic != backgroundMusic) {
             stopAllMusic();
